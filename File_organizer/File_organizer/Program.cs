@@ -16,7 +16,7 @@ namespace File_organizer
         static void Main(string[] args)
         {
             string srcDirPath = @"C:\Users\dljdg\Desktop\test";
-            string trgDirPath = @"C:\Users\dljdg\Desktop\test\hi";
+            string trgDirPath = @"C:\Users\dljdg\Desktop\test\정리";
 
             _stopwatch.Start();
             OnProcess(srcDirPath, trgDirPath);
@@ -46,19 +46,31 @@ namespace File_organizer
         {
             using (MagickImage img = new MagickImage(filePath))
             {
-                IExifProfile profile = img.GetExifProfile();
+                string dateTime = null;
 
-                foreach (IExifValue value in profile.Values)
+                foreach (IExifValue value in img.GetExifProfile().Values)
                 {
                     if (value.Tag.ToString() == "DateTimeOriginal")
                     {
                         Console.WriteLine("{0}({1}): {2}", value.Tag, value.DataType, value.ToString());
+                        dateTime = value.ToString();
                     }
-
-                    // Console.WriteLine("{0}({1}): {2}", value.Tag, value.DataType, value.ToString());
                 }
 
-                //string saveDirPath = Path.Combine(trgDirPath, "");
+                if (dateTime == null)
+                    return;
+
+                string[] dateTimes = dateTime.Split();
+                string date = dateTimes[0].Replace(":", ".");
+                string saveDirPath = Path.Combine(trgDirPath, date);
+                DirectoryInfo saveDir = new DirectoryInfo(saveDirPath);
+                FileInfo imgFile = new FileInfo(filePath);
+
+                if (!saveDir.Exists)
+                    saveDir.Create();
+
+                string saveFilePath = Path.Combine(saveDirPath, Path.GetFileName(filePath));
+                imgFile.MoveTo(saveFilePath);
             }
         }
     }
