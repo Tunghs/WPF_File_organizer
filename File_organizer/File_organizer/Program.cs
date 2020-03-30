@@ -15,9 +15,13 @@ namespace File_organizer
             string srcDirPath = @"D:\사진\아이폰 - 복사본\100APPLE";
             string trgDirPath = @"D:\사진\아이폰 - 복사본\정리";
 
-            _stopwatch.Start();
-            OnProcess(srcDirPath, trgDirPath);
-            _stopwatch.Stop();
+            string checkFilePath = @"D:\사진\아이폰 - 복사본\100APPLE\IMG_0557.PNG";
+
+            //_stopwatch.Start();
+            //OnProcess(srcDirPath, trgDirPath);
+            //_stopwatch.Stop();
+
+            FileProfileCheck(checkFilePath);
 
             Console.WriteLine("총 걸린 시간은 : " + _stopwatch.Elapsed.TotalSeconds.ToString() + "sec");
         }
@@ -37,9 +41,8 @@ namespace File_organizer
 
             foreach(FileInfo file in srcDirInfo.GetFiles())
             {
-                FileByDateTimeOriginal(file.FullName, trgDirPath);
-
-                // FileProfileCheck(file.FullName);
+                if (file.Extension.ToLower() == "jpg")
+                    FileByDateTimeOriginal(file.FullName, trgDirPath);
             }
         }
 
