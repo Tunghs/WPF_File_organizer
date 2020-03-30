@@ -12,8 +12,8 @@ namespace File_organizer
 
         static void Main(string[] args)
         {
-            string srcDirPath = @"C:\Users\dljdg\Desktop\test";
-            string trgDirPath = @"C:\Users\dljdg\Desktop\test\정리";
+            string srcDirPath = @"D:\사진\아이폰 - 복사본\100APPLE";
+            string trgDirPath = @"D:\사진\아이폰 - 복사본\정리";
 
             _stopwatch.Start();
             OnProcess(srcDirPath, trgDirPath);
@@ -39,7 +39,7 @@ namespace File_organizer
             {
                 FileByDateTimeOriginal(file.FullName, trgDirPath);
 
-                FileProfileCheck(file.FullName);
+                // FileProfileCheck(file.FullName);
             }
         }
 
@@ -54,7 +54,9 @@ namespace File_organizer
             {
                 string dateTime = null;
 
-                foreach (IExifValue value in img.GetExifProfile().Values)
+                IExifProfile profile = img.GetExifProfile();
+
+                foreach (IExifValue value in profile.Values)
                 {
                     if (value.Tag.ToString() == "DateTimeOriginal")
                     {
@@ -63,21 +65,21 @@ namespace File_organizer
                     }
                 }
 
-                if (dateTime == null)
-                    return;
+                if (dateTime != null)
+                {
+                    string[] dateTimes = dateTime.Split();
+                    string date = dateTimes[0].Replace(":", ".");
+                    string saveDirPath = Path.Combine(trgDirPath, date);
 
-                string[] dateTimes = dateTime.Split();
-                string date = dateTimes[0].Replace(":", ".");
-                string saveDirPath = Path.Combine(trgDirPath, date);
+                    DirectoryInfo saveDir = new DirectoryInfo(saveDirPath);
+                    FileInfo imgFile = new FileInfo(filePath);
 
-                DirectoryInfo saveDir = new DirectoryInfo(saveDirPath);
-                FileInfo imgFile = new FileInfo(filePath);
+                    if (!saveDir.Exists)
+                        saveDir.Create();
 
-                if (!saveDir.Exists)
-                    saveDir.Create();
-
-                string saveFilePath = Path.Combine(saveDirPath, Path.GetFileName(filePath));
-                imgFile.MoveTo(saveFilePath);
+                    string saveFilePath = Path.Combine(saveDirPath, Path.GetFileName(filePath));
+                    imgFile.MoveTo(saveFilePath);
+                }
             }
         }
 
