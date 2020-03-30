@@ -5,6 +5,9 @@ using System.Diagnostics;
 
 namespace File_organizer
 {
+    /// <summary>
+    /// 현재 PNG 파일 인식 불가 문제 있음.
+    /// </summary>
     class Program
     {
         // timer
@@ -15,13 +18,9 @@ namespace File_organizer
             string srcDirPath = @"D:\사진\아이폰 - 복사본\100APPLE";
             string trgDirPath = @"D:\사진\아이폰 - 복사본\정리";
 
-            string checkFilePath = @"D:\사진\아이폰 - 복사본\100APPLE\IMG_0557.PNG";
-
-            //_stopwatch.Start();
-            //OnProcess(srcDirPath, trgDirPath);
-            //_stopwatch.Stop();
-
-            FileProfileCheck(checkFilePath);
+            _stopwatch.Start();
+            OnProcess(srcDirPath, trgDirPath);
+            _stopwatch.Stop();
 
             Console.WriteLine("총 걸린 시간은 : " + _stopwatch.Elapsed.TotalSeconds.ToString() + "sec");
         }
@@ -119,6 +118,10 @@ namespace File_organizer
             }
         }
 
+        /// <summary>
+        /// 파일 프로파일 체크
+        /// </summary>
+        /// <param name="filePath"></param>
         static private void FileProfileCheck(string filePath)
         {
             using (MagickImage img = new MagickImage(filePath))
